@@ -107,8 +107,14 @@ func (p *Page) initTargetPathDescriptor() error {
 	// the permalink configuration values are likely to be redundant, e.g.
 	// naively expanding /category/:slug/ would give /category/categories/ for
 	// the "categories" KindTaxonomyTerm.
-	if p.Kind == KindPage || p.Kind == KindTaxonomy {
-		if override, ok := p.Site.Permalinks[p.Section()]; ok {
+	if p.Kind == KindPage || p.Kind == KindTaxonomy || p.Kind == KindTaxonomyTerm || p.Kind == KindSection {
+		section := p.Section()
+
+		if p.Kind == KindTaxonomyTerm || p.Kind == KindSection {
+			section += "_listpath"
+		}
+
+		if override, ok := p.Site.Permalinks[section]; ok {
 			opath, err := override.Expand(p)
 			if err != nil {
 				return err
