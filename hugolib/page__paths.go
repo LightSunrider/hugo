@@ -147,8 +147,14 @@ func createTargetPathDescriptor(s *Site, p page.Page, pm *pageMeta) (page.Target
 	// the permalink configuration values are likely to be redundant, e.g.
 	// naively expanding /category/:slug/ would give /category/categories/ for
 	// the "categories" page.KindTaxonomyTerm.
-	if p.Kind() == page.KindPage || p.Kind() == page.KindTaxonomy {
-		opath, err := d.ResourceSpec.Permalinks.Expand(p.Section(), p)
+	if p.Kind() == page.KindPage || p.Kind() == page.KindTaxonomy || p.Kind() == page.KindTaxonomyTerm || p.Kind() == page.KindSection {
+		section := p.Section()
+
+		if p.Kind() == page.KindTaxonomyTerm || p.Kind() == page.KindSection {
+			section += "_listpath"
+		}
+
+		opath, err := d.ResourceSpec.Permalinks.Expand(section, p)
 		if err != nil {
 			return desc, err
 		}
